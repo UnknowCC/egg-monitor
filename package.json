@@ -1,6 +1,6 @@
 {
-  "name": "@duochang/egg-monitor",
-  "version": "1.0.0",
+  "name": "egg-monitor",
+  "version": "1.0.1",
   "description": "",
   "eggPlugin": {
     "name": "monitor"

@@ -4,9 +4,19 @@
 module.exports = () => async (ctx, next) => {
   try {
     await next(ctx);
+
+    const cost = Date.now() - ctx.starttime;
+    if (cost > 1000) {
+      const msg = {
+        event: 'req_slow',
+      };
+      ctx.getLogger('monitor').warn('[monitor] %j', msg);
+    }
+
   } catch (err) {
     const level = typeof ctx.status === 'undefined' || ctx.status >= 500 ? 'error' : 'warn';
     const msg = {
+      event: 'req_err',
       request_id: ctx.track.id,
       request_from: ctx.track.from,
       message: err.message,
