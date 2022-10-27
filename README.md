@@ -49,13 +49,37 @@ exports.monitor = {
 // {app_root}/config/config.default.js
 exports.monitor = {
 };
+exports.customLogger = {
+  monitor: {
+    file: 'egg-monitor.log'
+  }
+}
 ```
 
 see [config/config.default.js](config/config.default.js) for more detail.
 
 ## Example
+```js
+module.exports = class extends Controller {
+  async index() {
+    const { ctx } = this;
+    const host = '';
+    const options = {
+      retry: 1,
+      retryDelay: 50,
+      isRetry: function(res) {
+        return !res.status || res.status < 200 || [408, 502, 504].indexOf(parseInt(res.status)) > -1;
+      },
+      timeout: [1000, 5000],
+      contentType: 'json',
+      dataType: 'json'
+    };
+    return ctx.body = await ctx.custom_curl(host, options);
+  }
+}
+```
+see [httpClient](https://www.eggjs.org/zh-CN/core/httpclient#dataasquerystring-boolean) for more detail
 
-<!-- example here -->
 
 ## Questions & Suggestions
 
