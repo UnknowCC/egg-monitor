@@ -8,26 +8,21 @@ module.exports = () => async (ctx, next) => {
     const cost = Date.now() - ctx.starttime;
     if (cost > 1000) {
       const msg = {
-        event: 'req_slow',
+        event: 'rsp_slow',
+        client_ip: ctx.ip
       };
-      ctx.getLogger('monitor').warn('[monitor] %j', msg);
+      ctx.custom_log('warn', `[response] ${JSON.stringify(msg)}`);
     }
 
   } catch (err) {
     const level = typeof ctx.status === 'undefined' || ctx.status >= 500 ? 'error' : 'warn';
     const msg = {
-      event: 'req_err',
-      request_id: ctx.track.id,
-      request_from: ctx.track.from,
-      message: err.message,
-      code: err.code,
-      stack: err.stack
+      event: 'rsp_err',
+      err: {name: err.name, message: err.message, stack: err.stack, code: err.code},
+      client_ip: ctx.ip
     };
-    try {
-      ctx.getLogger('monitor')[level]('[monitor] %j', msg);
-    } catch (error) {
-      ctx.app.logger[level]('[monitor] %j', msg);
-    }
+
+    ctx.custom_log(level, `[response] ${JSON.stringify(msg)}`);
 
     // 构造响应
     const body = {

@@ -23,6 +23,9 @@
 <!--
 Description here.
 -->
+## feature
+1、新增全局中间件，会记录异常的请求，主要是400以上的错误日志
+2、封装了一个curl请求
 
 ## Install
 
