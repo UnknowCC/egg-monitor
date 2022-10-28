@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https+git@github.com:UnknowCC/egg-monitor.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/UnknowCC/egg-monitor/issues"
   },
   "homepage": "",
   "author": "",
