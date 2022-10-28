@@ -48,7 +48,9 @@ exports.monitor = {
 ```js
 // {app_root}/config/config.default.js
 exports.monitor = {
+  logAllRequest: false // 是否记录所有日志，用于调试模式，默认关闭
 };
+// default log path
 exports.customLogger = {
   monitor: {
     file: 'egg-monitor.log'
@@ -86,7 +88,7 @@ see [httpClient](https://www.eggjs.org/zh-CN/core/httpclient#dataasquerystring-b
 
 ## Questions & Suggestions
 
-Please open an issue [here](https://github.com/eggjs/egg/issues).
+Please open an issue [here](https://github.com/UnknowCC/egg-monitor/issues).
 
 ## License
 

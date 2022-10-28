@@ -6,7 +6,7 @@
  * @property {String} SOME_KEY - some description
  */
 exports.monitor = {
-
+  logAllRequest: false,
 };
 
 exports.customLogger = {

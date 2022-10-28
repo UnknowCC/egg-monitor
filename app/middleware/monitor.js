@@ -1,39 +1,35 @@
 'use strict';
 
 // Http错误中间件
-module.exports = () => async (ctx, next) => {
+module.exports = (options) => async (ctx, next) => {
 
   let level = 'info';
   let msg = {
+    event: 'debug',
+    req: ctx.request,
     client_ip: ctx.ip
   };
 
   try {
+
     await next(ctx);
 
-    const cost = Date.now() - ctx.starttime;
     if (ctx.status >= 400) {
       level = ctx.status >= 500 ? 'error' : 'warn';
-      msg = {
-        event: 'rep_err',
-        res: ctx.body,
-        ...msg,
+      msg.event = 'req_err';
+      msg.res = {res: ctx.body, status: ctx.status};
+    } else {
+      const cost = Date.now() - ctx.starttime;
+      if (cost > 1000) {
+        level = 'warn';
+        msg.event = 'req_slow';
       }
-    } else if (cost > 1000) {
-      level = 'warn';
-      msg = {
-        event: 'rsp_slow',
-        ...msg,
-      }
+      msg.res = {body: ctx.body, status: ctx.status}
     }
-
   } catch (err) {
     level = typeof ctx.status === 'undefined' || ctx.status >= 500 ? 'error' : 'warn';
-    msg = {
-      event: 'rsp_err',
-      err: {name: err.name, message: err.message, stack: err.stack, code: err.code},
-      ...msg,
-    };
+    msg.event = 'rsp_err';
+    msg.err = {name: err.name, message: err.message, stack: err.stack, code: err.code};
 
     // 构造响应
     const body = {
@@ -60,7 +56,7 @@ module.exports = () => async (ctx, next) => {
     ctx.body = body;
   }
 
-  if (['warn', 'error'].indexOf(level) > -1) {
+  if (options.logAllRequest || ['warn', 'error'].indexOf(level) > -1) {
     ctx.custom_log(level, `[response] ${JSON.stringify(msg)}`);
   }
 };
