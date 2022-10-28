@@ -16,29 +16,30 @@ module.exports = {
     if (!options.headers['x-request-from']) {
       options.headers['x-request-from'] = this.track.from;
     }
-    if (!options.retry) {
-      options.retry = 1;
-    }
-    if (!options.retryDelay) {
-      options.retryDelay = 50;
-    }
-    if (!options.method || options.method.toUpperCase() !== 'POST' || !options.isRetry) {
-      options.isRetry = function(res) {
-        return !res.status || res.status < 200 || [408, 502, 504].indexOf(parseInt(res.status)) > -1;
-      }
-    }
-    if (!options.timeout) {
-      options.timeout = [1000, 5000];
-    }
-    if (!options.contentType && options.data && typeof options.data == 'object') {
+    // if (!options.retry) {
+    //   options.retry = 1;
+    // }
+    // if (!options.retryDelay) {
+    //   options.retryDelay = 50;
+    // }
+    // if (!options.method || options.method.toUpperCase() !== 'POST' || !options.isRetry) {
+    //   options.isRetry = function(res) {
+    //     return !res.status || res.status < 200 || [408, 502, 504].indexOf(parseInt(res.status)) > -1;
+    //   }
+    // }
+    // if (!options.timeout) {
+    //   options.timeout = [1000, 5000];
+    // }
+    if (!options.contentType) {
       options.contentType = 'json';
     }
-    if (!options.dataType && options.contentType === 'json') {
+    if (!options.dataType) {
       options.dataType = 'json';
     }
 
+    let res;
     try {
-      const res = await this.curl(url, options);
+      res = await this.curl(url, options);
       if (!res.status || res.status >= 400) {
         const level = typeof res.status === 'undefined' || res.status >= 500 ? 'error' : 'warn';
         const msg = {
@@ -53,6 +54,7 @@ module.exports = {
       const msg = {
         event: 'client_err',
         req: {url, ...options},
+        res: res,
         err: {name: err.name, message: err.message, stack: err.stack, code: err.code}
 
       };

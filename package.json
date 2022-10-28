@@ -1,6 +1,6 @@
 {
   "name": "egg-monitor",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "",
   "eggPlugin": {
     "name": "monitor"

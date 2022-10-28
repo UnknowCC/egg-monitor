@@ -65,14 +65,17 @@ module.exports = class extends Controller {
     const { ctx } = this;
     const host = '';
     const options = {
-      retry: 1,
-      retryDelay: 50,
-      isRetry: function(res) {
+      method: 'GET', // 请求方式 默认GET
+      data: {}, // 请求内容
+      headers: {}, // 请求头
+      retry: 1, // 重试次数
+      retryDelay: 50, // 重试延迟时间
+      isRetry: function(res) { // 重试判断条件
         return !res.status || res.status < 200 || [408, 502, 504].indexOf(parseInt(res.status)) > -1;
       },
-      timeout: [1000, 5000],
-      contentType: 'json',
-      dataType: 'json'
+      timeout: [1000, 5000], // 超时时间
+      contentType: 'json', // 请求内容格式
+      dataType: 'json' // 响应内容解析方式
     };
     return ctx.body = await ctx.custom_curl(host, options);
   }
