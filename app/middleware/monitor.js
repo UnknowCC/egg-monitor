@@ -6,7 +6,6 @@ module.exports = (options) => async (ctx, next) => {
   let level = 'info';
   let msg = {
     event: 'debug',
-    req: ctx.request,
     client_ip: ctx.ip
   };
 
@@ -16,13 +15,13 @@ module.exports = (options) => async (ctx, next) => {
 
     if (ctx.status >= 400) {
       level = ctx.status >= 500 ? 'error' : 'warn';
-      msg.event = 'req_err';
+      msg.event = 'rsp_err';
       msg.res = {res: ctx.body, status: ctx.status};
     } else {
       const cost = Date.now() - ctx.starttime;
       if (cost > 1000) {
         level = 'warn';
-        msg.event = 'req_slow';
+        msg.event = 'rsp_slow';
       }
       msg.res = {body: ctx.body, status: ctx.status}
     }
